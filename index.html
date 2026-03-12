@@ -3,68 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy-First Image Compressor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Local Image Compressor — Privacy-First, Open Source</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+    <!-- Badge Strip -->
+    <div class="badge-strip">
+        <span class="pill pill-oss">
+            <span class="material-icons-round">code</span> Open Source
+        </span>
+        <span class="pill pill-mit">
+            <span class="material-icons-round">gavel</span> MIT License
+        </span>
+        <span class="pill pill-adfree">
+            <span class="material-icons-round">block</span> Ad-Free
+        </span>
+        <span class="pill pill-local">
+            <span class="material-icons-round">lock</span> 100% Local
+        </span>
+    </div>
+
     <main class="container">
         <div class="header">
-            <span class="material-icons-round hero-icon">security</span>
+            <div class="hero-icon-wrap">
+                <span class="material-icons-round hero-icon">security</span>
+            </div>
             <h1>Local Image Compressor</h1>
-            <p>100% private. Your files never leave your device.</p>
+            <p>Your files never leave your device — zero uploads, zero tracking, zero ads.</p>
         </div>
 
         <div class="card">
+
+            <!-- Upload Zone -->
             <div class="upload-zone" id="uploadZone">
                 <span class="material-icons-round">cloud_upload</span>
-                <h3>Choose an Image</h3>
-                <p>Supports JPG and PNG</p>
+                <h3>Drop an image or click to browse</h3>
+                <p>Processed entirely in your browser using the Canvas API</p>
+                <div class="format-tags">
+                    <span class="format-tag">JPG</span>
+                    <span class="format-tag">PNG</span>
+                </div>
                 <input type="file" id="fileInput" accept="image/jpeg, image/png" hidden>
             </div>
 
+            <!-- Controls -->
             <div class="controls hidden" id="controlsPanel">
                 <div class="file-info">
-                    <span class="material-icons-round" style="color: var(--primary);">image</span>
+                    <span class="material-icons-round">image</span>
                     <span id="originalFileName">filename.jpg</span>
-                    <span class="badge" id="originalFileSize">0 MB</span>
+                    <span class="badge" id="originalFileSize">0 KB</span>
                 </div>
 
                 <div class="slider-container">
-                    <label for="qualitySlider">Compression Quality: <span id="qualityValue">80%</span></label>
-                    <input type="range" id="qualitySlider" min="0.1" max="1.0" step="0.1" value="0.8">
-                    <p class="helper-text">Lower quality = smaller file size.</p>
+                    <div class="slider-header">
+                        <label for="qualitySlider">Compression Quality</label>
+                        <span class="quality-val" id="qualityValue">80%</span>
+                    </div>
+                    <input type="range" id="qualitySlider" min="10" max="100" step="5" value="80">
+                    <div class="slider-labels">
+                        <span>Smaller file</span>
+                        <span>Higher quality</span>
+                    </div>
                 </div>
 
-                <button class="btn ripple" id="compressBtn">
+                <!-- Live Size Preview -->
+                <div class="live-preview" id="livePreview">
+                    <span class="material-icons-round">insights</span>
+                    <div class="preview-text">
+                        <div class="preview-label">Estimated output size</div>
+                        <div class="preview-sizes">
+                            <span class="preview-original" id="previewOriginal">—</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-estimated" id="previewEstimated">calculating…</span>
+                        </div>
+                    </div>
+                    <span class="preview-saving" id="previewSaving">~0% saved</span>
+                </div>
+
+                <button class="btn" id="compressBtn">
                     <span class="material-icons-round">compress</span> Compress Image
                 </button>
             </div>
 
+            <!-- Results -->
             <div class="results hidden" id="resultsPanel">
                 <div class="success-box">
-                    <span class="material-icons-round success-icon">check_circle</span>
+                    <div class="success-icon-wrap">
+                        <span class="material-icons-round success-icon">check_circle</span>
+                    </div>
                     <h3>Compression Complete!</h3>
+                    <p class="sub">Your compressed image is ready to download.</p>
                     <div class="stats">
                         <div class="stat-box">
-                            <span class="stat-label">Original</span>
-                            <span class="stat-value" id="oldSizeDisplay">0 MB</span>
+                            <span class="stat-label">Original Size</span>
+                            <span class="stat-value" id="oldSizeDisplay">0 KB</span>
                         </div>
                         <div class="stat-box highlight">
                             <span class="stat-label">Compressed</span>
-                            <span class="stat-value" id="newSizeDisplay">0 MB</span>
+                            <span class="stat-value" id="newSizeDisplay">0 KB</span>
+                            <span class="stat-savings" id="savingsDisplay">↓ saved 0%</span>
                         </div>
                     </div>
-                    <a href="#" class="btn ripple download-btn" id="downloadLink" download="compressed_image.jpg">
-                        <span class="material-icons-round">download</span> Download File
+                    <a href="#" class="download-btn" id="downloadLink" download="compressed_image.jpg">
+                        <span class="material-icons-round">download</span> Download Compressed Image
                     </a>
-                    <button class="btn-text" id="resetBtn">Compress Another File</button>
+                    <button class="btn-text" id="resetBtn">↩ Compress another image</button>
                 </div>
             </div>
+
         </div>
     </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div>
+            Built with ❤️ using HTML, CSS &amp; Canvas API
+            <span class="sep">·</span>
+            <a href="https://github.com/gorupa/local-image-compressor" target="_blank" rel="noopener">
+                <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                </svg>
+                gorupa / local-image-compressor
+            </a>
+        </div>
+        <div>
+            Released under the
+            <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>
+            <span class="sep">·</span>
+            No ads · No tracking · No server uploads
+        </div>
+    </footer>
 
     <script src="js/script.js"></script>
 </body>
