@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy-First Image Compressor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <main class="container">
+        <div class="header">
+            <span class="material-icons-round hero-icon">security</span>
+            <h1>Local Image Compressor</h1>
+            <p>100% private. Your files never leave your device.</p>
+        </div>
+
+        <div class="card">
+            <div class="upload-zone" id="uploadZone">
+                <span class="material-icons-round">cloud_upload</span>
+                <h3>Choose an Image</h3>
+                <p>Supports JPG and PNG</p>
+                <input type="file" id="fileInput" accept="image/jpeg, image/png" hidden>
+            </div>
+
+            <div class="controls hidden" id="controlsPanel">
+                <div class="file-info">
+                    <span class="material-icons-round" style="color: var(--primary);">image</span>
+                    <span id="originalFileName">filename.jpg</span>
+                    <span class="badge" id="originalFileSize">0 MB</span>
+                </div>
+
+                <div class="slider-container">
+                    <label for="qualitySlider">Compression Quality: <span id="qualityValue">80%</span></label>
+                    <input type="range" id="qualitySlider" min="0.1" max="1.0" step="0.1" value="0.8">
+                    <p class="helper-text">Lower quality = smaller file size.</p>
+                </div>
+
+                <button class="btn ripple" id="compressBtn">
+                    <span class="material-icons-round">compress</span> Compress Image
+                </button>
+            </div>
+
+            <div class="results hidden" id="resultsPanel">
+                <div class="success-box">
+                    <span class="material-icons-round success-icon">check_circle</span>
+                    <h3>Compression Complete!</h3>
+                    <div class="stats">
+                        <div class="stat-box">
+                            <span class="stat-label">Original</span>
+                            <span class="stat-value" id="oldSizeDisplay">0 MB</span>
+                        </div>
+                        <div class="stat-box highlight">
+                            <span class="stat-label">Compressed</span>
+                            <span class="stat-value" id="newSizeDisplay">0 MB</span>
+                        </div>
+                    </div>
+                    <a href="#" class="btn ripple download-btn" id="downloadLink" download="compressed_image.jpg">
+                        <span class="material-icons-round">download</span> Download File
+                    </a>
+                    <button class="btn-text" id="resetBtn">Compress Another File</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
