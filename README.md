@@ -15,12 +15,19 @@ Most free compression tools upload your personal photos to remote servers. This 
 🌐 Option 1 — Use the Live Web App (Recommended)
 Open the tool
 https://local-image-compressor.pages.dev/⁠�
+
 Click Select Image.
+
 Choose a JPG, JPEG, or PNG image.
+
 Adjust the compression quality slider.
+
 Download the compressed image instantly.
+
 ✅ No installation required
+
 ✅ Works on mobile and desktop
+
 ✅ Images are processed locally in your browser
 
 
