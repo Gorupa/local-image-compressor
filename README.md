@@ -1,15 +1,20 @@
 <div align="center">
 
-<img src="https://img.shields.io/badge/Local%20Image%20Compressor-1a73e8?style=for-the-badge&logo=security&logoColor=white" alt="Local Image Compressor" height="50"/>
+<img src="https://img.shields.io/badge/Local%20Image%20Compressor-1a73e8?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Local Image Compressor" height="50"/>
 
 <br/>
+<br/>
+
+[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-local--image--compressor.pages.dev-1a73e8?style=for-the-badge)](https://local-image-compressor.pages.dev/)
+
 <br/>
 
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Open Source](https://img.shields.io/badge/Open%20Source-❤️-purple?style=flat-square)](https://github.com/gorupa/local-image-compressor)
-[![Ad-Free](https://img.shields.io/badge/Ad--Free-✓-green?style=flat-square)](#)
-[![No Server](https://img.shields.io/badge/No%20Server-100%25%20Local-blue?style=flat-square)](#)
-[![Made with Canvas API](https://img.shields.io/badge/Canvas%20API-Powered-orange?style=flat-square)](#)
+[![Ad-Free](https://img.shields.io/badge/Ad--Free-✓-green?style=flat-square)](https://local-image-compressor.pages.dev/)
+[![No Server](https://img.shields.io/badge/No%20Server-100%25%20Local-blue?style=flat-square)](https://local-image-compressor.pages.dev/)
+[![Made with Canvas API](https://img.shields.io/badge/Canvas%20API-Powered-orange?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
+[![Deployed on Cloudflare](https://img.shields.io/badge/Deployed%20on-Cloudflare%20Pages-F38020?style=flat-square&logo=cloudflare&logoColor=white)](https://local-image-compressor.pages.dev/)
 
 <br/>
 
@@ -19,7 +24,7 @@
 
 <br/>
 
-[**🚀 Try it Live**](https://local-image-compressor.pages.dev) · [**📖 How it Works**](#how-it-works) · [**🛠 Run Locally**](#run-locally) · [**🤝 Contributing**](#contributing)
+[**🌐 Try it Live →**](https://local-image-compressor.pages.dev/) · [**📖 How it Works**](#️-how-it-works) · [**🛠 Run Locally**](#-run-locally) · [**🤝 Contributing**](#-contributing)
 
 <br/>
 
@@ -206,6 +211,8 @@ See the full [LICENSE](./LICENSE) file for details.
 <div align="center">
 
 Made with ❤️ by [gorupa](https://github.com/gorupa)
+
+🌐 **Live at [local-image-compressor.pages.dev](https://local-image-compressor.pages.dev/)**
 
 ⭐ If this project helped you, consider giving it a star!
 
