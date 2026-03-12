@@ -32,6 +32,7 @@ Download the compressed image instantly.
 
 
    ##🤝 Contributing
+   
 Contributions are welcome!
 
 If you'd like to improve the project:
