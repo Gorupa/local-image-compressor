@@ -12,9 +12,30 @@ Most free compression tools upload your personal photos to remote servers. This 
 - **Format Support:** Compresses JPG, JPEG, and PNG files.
 
 ## 🚀 How to Use
-1. Clone the repository.
-2. Open `index.html` in any modern web browser.
-3. Select an image, adjust the slider, and download the compressed file instantly.
+🌐 Option 1 — Use the Live Web App (Recommended)
+Open the tool
+https://local-image-compressor.pages.dev/⁠�
+Click Select Image.
+Choose a JPG, JPEG, or PNG image.
+Adjust the compression quality slider.
+Download the compressed image instantly.
+✅ No installation required
+✅ Works on mobile and desktop
+✅ Images are processed locally in your browser
+
+
+   ##🤝 Contributing
+Contributions are welcome!
+
+If you'd like to improve the project:
+
+Fork the repository
+
+Create a new branch
+
+Make your change
+
+Submit a Pull Request
 
 ## 🛠️ Tech Stack
 - HTML5
