@@ -1,107 +1,184 @@
-// DOM Elements
-const uploadZone = document.getElementById('uploadZone');
-const fileInput = document.getElementById('fileInput');
-const controlsPanel = document.getElementById('controlsPanel');
-const resultsPanel = document.getElementById('resultsPanel');
+/* ============================================
+   Local Image Compressor — script.js
+   Author: gorupa (https://github.com/gorupa)
+   License: MIT
+   ============================================ */
+
+// ── DOM References ──
+const uploadZone       = document.getElementById('uploadZone');
+const fileInput        = document.getElementById('fileInput');
+const controlsPanel    = document.getElementById('controlsPanel');
+const resultsPanel     = document.getElementById('resultsPanel');
 const originalFileName = document.getElementById('originalFileName');
 const originalFileSize = document.getElementById('originalFileSize');
-const qualitySlider = document.getElementById('qualitySlider');
-const qualityValue = document.getElementById('qualityValue');
-const compressBtn = document.getElementById('compressBtn');
-const oldSizeDisplay = document.getElementById('oldSizeDisplay');
-const newSizeDisplay = document.getElementById('newSizeDisplay');
-const downloadLink = document.getElementById('downloadLink');
-const resetBtn = document.getElementById('resetBtn');
+const qualitySlider    = document.getElementById('qualitySlider');
+const qualityValue     = document.getElementById('qualityValue');
+const compressBtn      = document.getElementById('compressBtn');
+const oldSizeDisplay   = document.getElementById('oldSizeDisplay');
+const newSizeDisplay   = document.getElementById('newSizeDisplay');
+const savingsDisplay   = document.getElementById('savingsDisplay');
+const downloadLink     = document.getElementById('downloadLink');
+const resetBtn         = document.getElementById('resetBtn');
+const previewOriginal  = document.getElementById('previewOriginal');
+const previewEstimated = document.getElementById('previewEstimated');
+const previewSaving    = document.getElementById('previewSaving');
 
 let currentFile = null;
+let currentImg  = null;   // cached HTMLImageElement for live estimation
+let liveCanvas  = null;   // offscreen canvas for size estimates
 
-// Format bytes to MB/KB
+// ── Utilities ──
+
+/**
+ * Formats a byte count into a human-readable string (B, KB, or MB).
+ * @param {number} bytes
+ * @returns {string}
+ */
 function formatBytes(bytes) {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return '0 B';
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB'];
+    const sizes = ['B', 'KB', 'MB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-// Handle File Selection
-uploadZone.addEventListener('click', () => fileInput.click());
+/**
+ * Updates the slider track fill color to match the current value.
+ */
+function updateSliderFill() {
+    const min = qualitySlider.min;
+    const max = qualitySlider.max;
+    const val = qualitySlider.value;
+    const pct = ((val - min) / (max - min)) * 100;
+    qualitySlider.style.background =
+        `linear-gradient(to right, var(--primary) 0%, var(--primary) ${pct}%, var(--border) ${pct}%)`;
+}
 
-fileInput.addEventListener('change', function(e) {
-    const file = e.target.files[0];
+// ── Live Size Estimation ──
+
+/**
+ * Runs a quick canvas-to-blob compression at the current quality setting
+ * and updates the live preview panel with the estimated output size.
+ */
+function estimateSize() {
+    if (!liveCanvas || !currentFile) return;
+    const quality = qualitySlider.value / 100;
+    liveCanvas.toBlob((blob) => {
+        if (!blob) return;
+        const estimated = blob.size;
+        const original  = currentFile.size;
+        const saved     = Math.max(0, Math.round((1 - estimated / original) * 100));
+
+        previewOriginal.textContent  = formatBytes(original);
+        previewEstimated.textContent = formatBytes(estimated);
+        previewSaving.textContent    = `~${saved}% saved`;
+    }, 'image/jpeg', quality);
+}
+
+// ── File Handling ──
+
+/**
+ * Accepts a File object, validates its type, renders it to an offscreen
+ * canvas for estimation, and switches the UI to the controls panel.
+ * @param {File} file
+ */
+function handleFile(file) {
     if (!file) return;
+    if (file.type !== 'image/jpeg' && file.type !== 'image/png') return;
 
     currentFile = file;
+
+    // Update file info display
     originalFileName.textContent = file.name;
     originalFileSize.textContent = formatBytes(file.size);
-    oldSizeDisplay.textContent = formatBytes(file.size);
+    oldSizeDisplay.textContent   = formatBytes(file.size);
+    previewOriginal.textContent  = formatBytes(file.size);
+
+    // Read and cache the image in an offscreen canvas
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+            currentImg         = img;
+            liveCanvas         = document.createElement('canvas');
+            liveCanvas.width   = img.width;
+            liveCanvas.height  = img.height;
+            liveCanvas.getContext('2d').drawImage(img, 0, 0);
+            estimateSize(); // show initial estimate immediately
+        };
+    };
 
     uploadZone.classList.add('hidden');
     controlsPanel.classList.remove('hidden');
+}
+
+// Click to select file
+uploadZone.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+
+// Drag-and-drop support
+uploadZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadZone.classList.add('drag-over');
+});
+uploadZone.addEventListener('dragleave', () => {
+    uploadZone.classList.remove('drag-over');
+});
+uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove('drag-over');
+    handleFile(e.dataTransfer.files[0]);
 });
 
-// Update Slider Value
-qualitySlider.addEventListener('input', function() {
-    qualityValue.textContent = Math.round(this.value * 100) + '%';
+// ── Slider ──
+qualitySlider.addEventListener('input', function () {
+    qualityValue.textContent = this.value + '%';
+    updateSliderFill();
+    estimateSize(); // re-estimate on every slider move
 });
+updateSliderFill(); // initialise fill on page load
 
-// Compress Logic using HTML5 Canvas
+// ── Compress ──
 compressBtn.addEventListener('click', () => {
-    if (!currentFile) return;
+    if (!liveCanvas || !currentFile) return;
 
-    compressBtn.innerHTML = '<span class="material-icons-round">hourglass_empty</span> Compressing...';
-    compressBtn.disabled = true;
+    // Show loading state
+    compressBtn.innerHTML = `<span class="material-icons-round" style="animation:spin 0.8s linear infinite">hourglass_empty</span> Compressing…`;
+    compressBtn.disabled  = true;
 
-    const reader = new FileReader();
-    reader.readAsDataURL(currentFile);
-    
-    reader.onload = function(event) {
-        const img = new Image();
-        img.src = event.target.result;
-        
-        img.onload = function() {
-            // Create a hidden canvas
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            canvas.width = img.width;
-            canvas.height = img.height;
-            
-            // Draw original image on canvas
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            
-            // Extract with new quality setting (works for JPG/WebP)
-            const quality = parseFloat(qualitySlider.value);
-            
-            canvas.toBlob((blob) => {
-                const newSize = blob.size;
-                newSizeDisplay.textContent = formatBytes(newSize);
-                
-                // Create download link
-                const compressedUrl = URL.createObjectURL(blob);
-                downloadLink.href = compressedUrl;
-                
-                // Set the download filename
-                const newName = currentFile.name.replace(/\.[^/.]+$/, "") + "_compressed.jpg";
-                downloadLink.download = newName;
+    const quality = qualitySlider.value / 100;
 
-                // Update UI
-                controlsPanel.classList.add('hidden');
-                resultsPanel.classList.remove('hidden');
-                
-                // Reset button
-                compressBtn.innerHTML = '<span class="material-icons-round">compress</span> Compress Image';
-                compressBtn.disabled = false;
-                
-            }, 'image/jpeg', quality);
-        }
-    }
+    // Re-use the cached canvas for the final compression
+    liveCanvas.toBlob((blob) => {
+        const newSize  = blob.size;
+        const origSize = currentFile.size;
+        const savedPct = Math.max(0, Math.round((1 - newSize / origSize) * 100));
+
+        // Populate results panel
+        newSizeDisplay.textContent = formatBytes(newSize);
+        savingsDisplay.textContent = `↓ saved ${savedPct}%`;
+
+        // Create object URL and set download link
+        downloadLink.href     = URL.createObjectURL(blob);
+        downloadLink.download = currentFile.name.replace(/\.[^/.]+$/, '') + '_compressed.jpg';
+
+        // Switch panels
+        controlsPanel.classList.add('hidden');
+        resultsPanel.classList.remove('hidden');
+
+        // Restore button state
+        compressBtn.innerHTML = `<span class="material-icons-round">compress</span> Compress Image`;
+        compressBtn.disabled  = false;
+
+    }, 'image/jpeg', quality);
 });
 
-// Reset App
+// ── Reset ──
 resetBtn.addEventListener('click', () => {
     resultsPanel.classList.add('hidden');
     uploadZone.classList.remove('hidden');
-    fileInput.value = '';
-    currentFile = null;
+    fileInput.value          = '';
+    currentFile = currentImg = liveCanvas = null;
 });
