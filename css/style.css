@@ -137,6 +137,25 @@ body {
 }
 .header p { color: var(--text-muted); font-size: 0.925rem; line-height: 1.5; }
 
+/* ── Sibling tool link ── */
+.tool-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #e8410a;
+    text-decoration: none;
+    padding: 4px 12px;
+    border-radius: 100px;
+    background: #fff0eb;
+    border: 1px solid #fca99d;
+    transition: all 0.15s ease;
+}
+.tool-link:hover { background: #ffd9cc; transform: translateY(-1px); }
+.tool-link .material-icons-round { font-size: 14px; }
+
 /* ── Card ── */
 .card {
     background: var(--surface);
